@@ -14,6 +14,7 @@ namespace UI.Windows
         private SignalBus signalBus;
 
         [SerializeField] private Button playButton;
+        [SerializeField] private Button settingsButton;
 
         [Inject]
         private void Construct(SignalBus signalBus)
@@ -23,11 +24,13 @@ namespace UI.Windows
         private void Awake()
         {
             playButton.onClick.AddListener(OnPlayButtonPressed);
+            settingsButton.onClick.AddListener(OnSettingsButtonPressed);
         }
 
         private void OnDestroy()
         {
             playButton.onClick.RemoveListener(OnPlayButtonPressed);
+            settingsButton.onClick.RemoveListener(OnSettingsButtonPressed);
         }
 
         public void OnPlayButtonPressed()
@@ -35,6 +38,11 @@ namespace UI.Windows
             signalBus.Fire(new UIStateChangedSignal(typeof(LevelSelectionWindow)));
             
             signalBus.Fire(new GameStateChangedSignal(typeof(LevelSelectionState)));
+        }
+
+        public void OnSettingsButtonPressed()
+        {
+            signalBus.Fire(new UIStateChangedSignal(typeof(SettingsWindow)));
         }
     }
 }

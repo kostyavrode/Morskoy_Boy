@@ -9,7 +9,7 @@ namespace UI
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private List<UIWindow> windows; // Список всех окон
+        [SerializeField] private List<UIWindow> windows;
 
         private readonly Dictionary<Type, UIWindow> windowDict = new();
         private SignalBus signalBus;
@@ -22,10 +22,9 @@ namespace UI
             foreach (var window in windows)
             {
                 windowDict[window.GetType()] = window;
-                window.Hide(); // Все окна скрыты при старте
+                window.Hide();
             }
-
-            // Подписка на сигналы
+            
             signalBus.Subscribe<UIStateChangedSignal>(OnUIStateChanged);
         }
 

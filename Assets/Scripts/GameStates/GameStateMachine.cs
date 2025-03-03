@@ -1,4 +1,6 @@
-﻿using DI.SignalBus;
+﻿using System;
+using System.Collections.Generic;
+using DI.SignalBus;
 using DI.SignalBus.Level;
 using DI.SignalBus.States;
 using Services;
@@ -15,6 +17,8 @@ namespace GameStates
         private CoroutineService coroutineService;
         
         private GameState currentState;
+        
+        private readonly Dictionary<Type, GameState> stateCache = new();
 
         public GameStateMachine(SignalBus signalBus, DiContainer container)
         {
@@ -28,9 +32,32 @@ namespace GameStates
         public void SetState<T>(params object[] args) where T : GameState
         {
             currentState?.Exit();
-            currentState = container.Instantiate<T>(args);
+            
+            if (stateCache.TryGetValue(typeof(T), out GameState existingState))
+            {
+                currentState = existingState;
+                Debug.Log($"[GameStateMachine] Switching to cached state: {typeof(T).Name}");
+            }
+            else
+            {
+                currentState = container.Instantiate<T>(args);
+                stateCache[typeof(T)] = currentState;
+                Debug.Log($"[GameStateMachine] Creating and caching new state: {typeof(T).Name}");
+            }
+            
             currentState.Enter();
-            Debug.Log($"GameStateMachine switched to {typeof(T).Name}");
+        }
+        
+        public bool TryGetState<T>(out T state) where T : GameState
+        {
+            if (stateCache.TryGetValue(typeof(T), out GameState existingState))
+            {
+                state = existingState as T;
+                return true;
+            }
+
+            state = null;
+            return false;
         }
         
         private void OnGameStateChanged(GameStateChangedSignal signal)
