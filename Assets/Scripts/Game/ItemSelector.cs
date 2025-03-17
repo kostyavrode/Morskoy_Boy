@@ -93,7 +93,7 @@ namespace Game
        public void ResetScore()
        {
            currentScore = 0;
-           gameScore.text = currentScore.ToString() + "/10";
+           gameScore.text = currentScore.ToString() + "/12";
            _itemSpawner.ResumeSpawningAndMoving();
        }
 
@@ -117,7 +117,7 @@ namespace Game
                     selectedItem2 = null;
                     MoneyController.instance.AddMoney();
                     currentScore += 1;
-                    gameScore.text = currentScore.ToString() + "/10";
+                    gameScore.text = currentScore.ToString() + "/12";
                 }
                 else
                 {

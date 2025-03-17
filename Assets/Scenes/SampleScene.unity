@@ -1057,7 +1057,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 336, y: -565}
-  m_SizeDelta: {x: 270, y: 220}
+  m_SizeDelta: {x: 300, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &254440563
 MonoBehaviour:
@@ -2959,6 +2959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   continueButton: {fileID: 2047187446}
   backToMenuButton: {fileID: 1936081739}
+  levelManager: {fileID: 118808303}
 --- !u!1 &499076293
 GameObject:
   m_ObjectHideFlags: 0

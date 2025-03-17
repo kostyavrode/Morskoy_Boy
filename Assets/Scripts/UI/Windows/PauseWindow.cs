@@ -2,6 +2,7 @@
 using DI.SignalBus;
 using DI.SignalBus.States;
 using GameStates;
+using Levels;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -14,6 +15,7 @@ namespace UI.Windows
         
         [SerializeField] private Button continueButton;
         [SerializeField] private Button backToMenuButton;
+        public LevelManager levelManager;
         
         [Inject]
         private void Construct(SignalBus signalBus)
@@ -42,9 +44,13 @@ namespace UI.Windows
 
         private void OnBackToMenuButtonPressed()
         {
+            levelManager.EndLevel(false);
+            
             signalBus.Fire(new UIStateChangedSignal(typeof(MenuWindow)));
             
             signalBus.Fire(new GameStateChangedSignal(typeof(MenuState)));
+            
+            
         }
     }
 }
