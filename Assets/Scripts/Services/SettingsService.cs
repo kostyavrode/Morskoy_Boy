@@ -66,7 +66,7 @@ namespace Services
             musicVolume = Mathf.Clamp01(volume);
             PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, musicVolume);
             PlayerPrefs.Save();
-        
+            ApplySettings();
             signalBus.Fire(new SettingsUpdatedSignal(musicVolume, sfxVolume, language));
         }
 
@@ -75,7 +75,7 @@ namespace Services
             sfxVolume = Mathf.Clamp01(volume);
             PlayerPrefs.SetFloat(SFX_VOLUME_KEY, sfxVolume);
             PlayerPrefs.Save();
-
+            ApplySettings();
             signalBus.Fire(new SettingsUpdatedSignal(musicVolume, sfxVolume, language));
         }
 

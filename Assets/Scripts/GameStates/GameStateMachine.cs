@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DI.SignalBus;
 using DI.SignalBus.Level;
 using DI.SignalBus.States;
+using Levels;
 using Services;
 using UnityEngine;
 using Zenject;
@@ -14,16 +15,18 @@ namespace GameStates
         private readonly SignalBus signalBus;
         private readonly DiContainer container;
         
+        private LevelManager levelManager;
         private CoroutineService coroutineService;
         
-        private GameState currentState;
+        public GameState currentState;
         
         private readonly Dictionary<Type, GameState> stateCache = new();
 
-        public GameStateMachine(SignalBus signalBus, DiContainer container)
+        public GameStateMachine(SignalBus signalBus, DiContainer container, LevelManager levelManager)
         {
             this.signalBus = signalBus;
             this.container = container;
+            this.levelManager = levelManager;
             this.signalBus.Subscribe<LevelSelectedSignal>(OnLevelSelected);
             this.signalBus.Subscribe<LevelLoadedSignal>(OnLevelLoaded);
             signalBus.Subscribe<GameStateChangedSignal>(OnGameStateChanged);

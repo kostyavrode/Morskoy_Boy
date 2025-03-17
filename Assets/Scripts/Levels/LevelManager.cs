@@ -2,74 +2,72 @@
 using System.Collections;
 using DI.SignalBus;
 using DI.SignalBus.Level;
+using DI.SignalBus.States;
+using GameStates;
+using TMPro;
+using UI.Windows;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Levels
 {
     public class LevelManager : MonoBehaviour
     {
-        [SerializeField] private int requiredHolesToPass = 3;
-        [SerializeField] private float timeLimit = 60f;
-
-        private int currentHoles = 0;
+        public float levelTime = 30f;
         private float timeRemaining;
         private bool isLevelActive = false;
+        public TMP_Text timerText;
+        public SignalBus signalBus;
+        public Image hpBar;
+        public int levelIndex;
 
-        private SignalBus signalBus;
 
         [Inject]
-        private void Construct(SignalBus signalBus)
+        public void Construct(SignalBus signalBus)
         {
             this.signalBus = signalBus;
         }
 
-        private void Start()
+        void Start()
         {
-            timeRemaining = timeLimit;
+            //StartLevel();
+            timeRemaining = levelTime;
+        }
+
+        public void StartLevel()
+        {
+            timeRemaining = levelTime;
             isLevelActive = true;
             StartCoroutine(LevelTimer());
         }
 
         private IEnumerator LevelTimer()
         {
-            while (isLevelActive)
+            while (timeRemaining > 0)
             {
                 timeRemaining -= Time.deltaTime;
-
-                if (timeRemaining <= 0)
-                {
-                    EndLevel(false);
-                    yield break;
-                }
-
+                //timerText.text = Mathf.CeilToInt(timeRemaining).ToString();
+                hpBar.fillAmount = timeRemaining / levelTime;
                 yield return null;
             }
+
+            EndLevel(false);
         }
 
-        public void OnBallInHole()
-        {
-            currentHoles++;
-            Debug.Log($"[LevelManager] Забитые лунки: {currentHoles}/{requiredHolesToPass}");
-
-            if (currentHoles >= requiredHolesToPass)
-            {
-                EndLevel(true);
-            }
-        }
-
-
-        private void EndLevel(bool isCompleted)
+        public void EndLevel(bool success)
         {
             isLevelActive = false;
-            Debug.Log($"[LevelManager] Уровень {(isCompleted ? "пройден" : "провален")}!");
-            
-            signalBus.Fire(new LevelEndedSignal(GetCurrentLevelIndex(), isCompleted, timeRemaining));
-        }
-
-        private int GetCurrentLevelIndex()
-        {
-            return 1;
+            if (success)
+            {
+                Debug.Log("Уровень пройден!");
+            }
+            else
+            {
+                Debug.Log("Время вышло! Уровень провален.");
+                signalBus.Fire(new LevelEndedSignal(1,false));
+                signalBus.Fire(new UIStateChangedSignal(typeof(LoseWindow)));
+            }
         }
     }
 }
