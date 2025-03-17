@@ -103,10 +103,16 @@ namespace Game
 
         private void SpawnItem(Transform spawnPoint, List<ItemMover> itemList)
         {
+            // Проверка, нет ли уже предмета на этой позиции
+            if (itemList.Count > 0 && itemList.Exists(item => item != null && Vector3.Distance(item.transform.position, spawnPoint.position) < 0.1f))
+            {
+                return; // Не спавним новый предмет, если он уже есть в месте спавна
+            }
+
             GameObject itemPrefab = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
             GameObject newItem = Instantiate(itemPrefab, spawnPoint.position, Quaternion.identity);
             ItemMover itemMover = newItem.GetComponent<ItemMover>();
-            itemMover._signalBus= _signalBus;
+            itemMover._signalBus = _signalBus;
             itemList.Add(itemMover);
         }
 
